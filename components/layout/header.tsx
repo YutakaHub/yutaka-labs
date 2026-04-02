@@ -1,7 +1,8 @@
 import Link from 'next/link'
 import { Container } from '@/components/layout/container'
+import { GitHubAvatar } from '@/components/profile/github-avatar'
 
-export function Header() {
+export async function Header() {
   return (
     <header className="border-b border-zinc-900/80">
       <Container className="flex h-16 items-center justify-between">
@@ -13,14 +14,9 @@ export function Header() {
           <Link href="/blog" className="transition hover:text-zinc-100">
             Blog
           </Link>
-          <a
-            href="https://github.com/YutakaHub"
-            target="_blank"
-            rel="noreferrer"
-            className="transition hover:text-zinc-100"
-          >
-            GitHub
-          </a>
+
+          {/* GitHubリンクはアイコン+ラベルの単一導線にして重複をなくす */}
+          <GitHubAvatar size={24} showLabel />
         </nav>
       </Container>
     </header>
