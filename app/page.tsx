@@ -1,26 +1,24 @@
-import { Button } from '@/components/ui/button'
 import { Container } from '@/components/layout/container'
 import { GitHubAvatar } from '@/components/profile/github-avatar'
+import { Button } from '@/components/ui/button'
 
 export default function HomePage() {
   return (
-    <Container className="py-24">
-      <section className="space-y-8">
-        <p className="text-sm uppercase tracking-[0.25em] text-zinc-500">Yutaka Labs</p>
+    <Container className="py-20">
+      <section className="space-y-6">
+        <p className="text-sm font-medium tracking-wide text-zinc-400">Yutaka Labs</p>
 
-        <h1 className="max-w-3xl text-5xl font-semibold tracking-tight text-zinc-100 sm:text-6xl">
-          ポートフォリオと技術ブログをまとめた、
-          <br />
-          個人の開発拠点。
+        <h1 className="max-w-3xl text-4xl font-semibold tracking-tight text-zinc-100 sm:text-5xl">
+          Minimal portfolio & engineering blog.
         </h1>
 
-        <p className="max-w-2xl text-lg leading-8 text-zinc-300">
-          Yutaka Labs は、React / Next.js を中心にした開発記録やUI実験をまとめるサイトです。
-          小さな検証を積み重ねて、再利用できる知見として残していきます。
+        <p className="max-w-2xl text-zinc-400">
+          Next.js / TypeScript を軸に、実装メモとポートフォリオをまとめる個人サイトです。
+          落ち着いたUIで、読みやすく再利用しやすい知見を蓄積します。
         </p>
 
         <div className="flex flex-wrap gap-3">
-          <Button href="/blog">ブログを見る</Button>
+          <Button href="/blog">Blog</Button>
           <Button href="https://github.com/YutakaHub" variant="solid" external>
             GitHub
           </Button>

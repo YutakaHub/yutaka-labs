@@ -11,12 +11,12 @@ export default async function BlogPage() {
   const posts = await getAllPosts()
 
   return (
-    <Container className="py-20">
+    <Container className="py-16">
       <section>
-        <h1 className="text-4xl font-semibold tracking-tight text-zinc-100">Blog</h1>
-        <p className="mt-3 text-zinc-400">実装メモや技術的な学びを、短く実践的に残していきます。</p>
+        <h1 className="text-3xl font-semibold tracking-tight text-zinc-100">Blog</h1>
+        <p className="mt-2 text-sm text-zinc-400">GitHubのIssue一覧のように、更新順で記事を並べています。</p>
 
-        <ul className="mt-10 space-y-4">
+        <ul className="mt-6 space-y-3">
           {posts.map((post) => (
             <li key={post.slug}>
               <PostCard post={post} />

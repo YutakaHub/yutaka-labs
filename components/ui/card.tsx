@@ -5,11 +5,7 @@ type CardProps = {
   className?: string
 }
 
-// 上品な境界線を持つ、ブログカード用のベースUI
+// 影ではなく境界線で区切る、GitHub風のカード
 export function Card({ children, className }: CardProps) {
-  return (
-    <div className={cn('rounded-2xl border border-zinc-800/90 bg-zinc-950/60 p-6', className)}>
-      {children}
-    </div>
-  )
+  return <div className={cn('rounded-lg border border-zinc-800 bg-zinc-900 p-5', className)}>{children}</div>
 }
