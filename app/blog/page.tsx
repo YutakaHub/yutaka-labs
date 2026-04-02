@@ -1,18 +1,29 @@
-import Link from 'next/link'
+import { Container } from '@/components/layout/container'
+import { PostCard } from '@/components/blog/post-card'
+import { getAllPosts } from '@/lib/posts'
 
-export default function BlogPage() {
+export const metadata = {
+  title: 'Blog',
+  description: 'Yutaka Labs の技術ブログ一覧',
+}
+
+export default async function BlogPage() {
+  const posts = await getAllPosts()
+
   return (
-    <main className="min-h-screen bg-zinc-950 text-zinc-100">
-      <div className="mx-auto max-w-4xl px-6 py-20">
-        <h1 className="mb-10 text-4xl font-semibold">Blog</h1>
+    <Container className="py-20">
+      <section>
+        <h1 className="text-4xl font-semibold tracking-tight text-zinc-100">Blog</h1>
+        <p className="mt-3 text-zinc-400">実装メモや技術的な学びを、短く実践的に残していきます。</p>
 
-        <Link href="/blog/first-post">
-          <div className="rounded-2xl border border-zinc-800 p-6 hover:bg-zinc-900">
-            <p className="text-sm text-zinc-400">2026-04-02</p>
-            <h2 className="text-2xl">Yutaka Labs を作った</h2>
-          </div>
-        </Link>
-      </div>
-    </main>
+        <ul className="mt-10 space-y-4">
+          {posts.map((post) => (
+            <li key={post.slug}>
+              <PostCard post={post} />
+            </li>
+          ))}
+        </ul>
+      </section>
+    </Container>
   )
 }

@@ -1,0 +1,28 @@
+---
+title: "Yutaka Labs を始めました"
+date: "2026-04-02"
+description: "このサイトの目的と、今後どんな技術記事を書いていくかを紹介します。"
+tags: [nextjs, mdx, portfolio]
+---
+
+## はじめに
+
+Yutaka Labs は、**ポートフォリオ + 技術ブログ** を1つにまとめた個人サイトです。
+
+## なぜこの構成にしたか
+
+- App Router で静的生成しやすい
+- `content/posts` 管理で記事追加が簡単
+- Vercel無料枠でも運用しやすい
+
+## 小さく始める
+
+まずは1記事から始めて、後で RSS / TOC / syntax highlight を段階的に追加する予定です。
+
+```ts
+export const siteName = 'Yutaka Labs'
+
+export function getMessage() {
+  return `${siteName} is my development base.`
+}
+```
