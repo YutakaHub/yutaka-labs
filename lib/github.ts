@@ -6,17 +6,34 @@ export type GitHubUser = {
   bio: string | null
 }
 
-const GITHUB_USER_ENDPOINT = 'https://api.github.com/users/YutakaHub'
+export const DEFAULT_GITHUB_USERNAME = 'YutakaHub'
 
-export async function getGitHubUser(): Promise<GitHubUser | null> {
+export function normalizeGitHubUsername(
+  username: string = DEFAULT_GITHUB_USERNAME,
+) {
+  return username.replace(/^@/, '')
+}
+
+export function getGitHubProfileUrl(
+  username: string = DEFAULT_GITHUB_USERNAME,
+) {
+  return `https://github.com/${normalizeGitHubUsername(username)}`
+}
+
+export async function getGitHubUser(
+  username: string = DEFAULT_GITHUB_USERNAME,
+): Promise<GitHubUser | null> {
   try {
-    const response = await fetch(GITHUB_USER_ENDPOINT, {
-      // 同一ユーザー情報への過剰アクセスを防ぐため、6時間キャッシュする
-      next: { revalidate: 60 * 60 * 6 },
-      headers: {
-        Accept: 'application/vnd.github+json',
+    const response = await fetch(
+      `https://api.github.com/users/${normalizeGitHubUsername(username)}`,
+      {
+        // 同一ユーザー情報への過剰アクセスを防ぐため、6時間キャッシュする
+        next: { revalidate: 60 * 60 * 6 },
+        headers: {
+          Accept: 'application/vnd.github+json',
+        },
       },
-    })
+    )
 
     if (!response.ok) {
       return null

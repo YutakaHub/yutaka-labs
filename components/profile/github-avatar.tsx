@@ -4,10 +4,17 @@ import { getGitHubUser } from '@/lib/github'
 type GitHubAvatarProps = {
   size?: number
   className?: string
+  withLink?: boolean
+  username?: string
 }
 
-export async function GitHubAvatar({ size = 36, className }: GitHubAvatarProps) {
-  const user = await getGitHubUser()
+export async function GitHubAvatar({
+  size = 36,
+  className,
+  withLink = true,
+  username,
+}: GitHubAvatarProps) {
+  const user = await getGitHubUser(username)
 
   if (!user) {
     // 取得失敗時は GitHub 文字のフォールバックを出す
@@ -23,6 +30,19 @@ export async function GitHubAvatar({ size = 36, className }: GitHubAvatarProps) 
   }
 
   const displayName = user.name ?? user.login
+  const avatarImage = (
+    <Image
+      src={user.avatar_url}
+      alt={`${displayName} の GitHub アイコン`}
+      width={size}
+      height={size}
+      className={`rounded-full border border-zinc-700/80 bg-zinc-900 object-cover ${className ?? ''}`}
+    />
+  )
+
+  if (!withLink) {
+    return avatarImage
+  }
 
   return (
     <a
@@ -33,13 +53,7 @@ export async function GitHubAvatar({ size = 36, className }: GitHubAvatarProps) 
       aria-label={`${displayName} の GitHub プロフィールへ移動`}
       title={displayName}
     >
-      <Image
-        src={user.avatar_url}
-        alt={`${displayName} の GitHub アイコン`}
-        width={size}
-        height={size}
-        className={`rounded-full border border-zinc-700/80 bg-zinc-900 object-cover ${className ?? ''}`}
-      />
+      {avatarImage}
     </a>
   )
 }

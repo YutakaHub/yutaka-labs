@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { Container } from '@/components/layout/container'
 import { GitHubAvatar } from '@/components/profile/github-avatar'
+import GitHubIcon from '../ui/github-icon'
 
 export async function Header() {
   return (
@@ -14,17 +15,7 @@ export async function Header() {
           <Link href="/blog" className="transition-colors hover:text-zinc-100">
             Blog
           </Link>
-          <a
-            href="https://github.com/YutakaHub"
-            target="_blank"
-            rel="noreferrer"
-            className="transition-colors hover:text-zinc-100"
-          >
-            GitHub
-          </a>
-
-          {/* GitHub風の控えめなアバター表示 */}
-          <GitHubAvatar />
+          <GitHubIcon />
         </nav>
       </Container>
     </header>
