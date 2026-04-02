@@ -25,13 +25,6 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
   return {
     title: post.title,
     description: post.description,
-    openGraph: {
-      title: post.title,
-      description: post.description,
-      type: 'article',
-      publishedTime: post.date,
-      url: `/blog/${post.slug}`,
-    },
   }
 }
 
@@ -44,8 +37,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const content = await renderMdx(post.content)
 
   return (
-    <Container className="py-20">
-      <article>
+    <Container className="py-16">
+      {/* 記事本文は横幅を制限して可読性を優先 */}
+      <article className="mx-auto max-w-3xl">
         <PostHeader post={post} />
         <div className="prose prose-invert max-w-none">{content}</div>
       </article>
