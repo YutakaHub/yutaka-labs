@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { Card } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
 import type { PostMeta } from '@/lib/posts'
 import { formatDate } from '@/lib/utils'
 
@@ -10,19 +11,20 @@ type PostCardProps = {
 export function PostCard({ post }: PostCardProps) {
   return (
     <Link href={`/blog/${post.slug}`} className="block">
-      <Card className="transition hover:border-zinc-700 hover:bg-zinc-900/80">
-        <p className="text-xs text-zinc-400">
-          <time dateTime={post.date}>{formatDate(post.date)}</time> ・ {post.readingMinutes} min read
-        </p>
-        <h2 className="mt-2 text-2xl font-medium text-zinc-100">{post.title}</h2>
-        <p className="mt-2 text-sm text-zinc-300">{post.description}</p>
-        <ul className="mt-4 flex flex-wrap gap-2">
+      <Card className="transition-colors hover:bg-zinc-800/60">
+        <div className="flex items-center justify-between gap-3 text-xs text-zinc-400">
+          <time dateTime={post.date}>{formatDate(post.date)}</time>
+          <span>{post.readingMinutes} min read</span>
+        </div>
+
+        <h2 className="mt-2 text-xl font-medium text-zinc-100">{post.title}</h2>
+        <p className="mt-2 text-sm text-zinc-400">{post.description}</p>
+
+        <div className="mt-4 flex flex-wrap gap-2">
           {post.tags.map((tag) => (
-            <li key={tag} className="rounded-full border border-zinc-700 px-2.5 py-1 text-xs text-zinc-300">
-              #{tag}
-            </li>
+            <Badge key={tag}>#{tag}</Badge>
           ))}
-        </ul>
+        </div>
       </Card>
     </Link>
   )
