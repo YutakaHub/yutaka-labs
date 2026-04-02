@@ -8,13 +8,13 @@ type ButtonProps = {
   external?: boolean
 }
 
-// シンプルなリンクボタンとして利用する共通UI
+// 無駄な装飾を省いた、ナビゲーション用の小さなボタン
 export function Button({ href, children, variant = 'outline', external = false }: ButtonProps) {
   const className = cn(
-    'inline-flex items-center rounded-full px-5 py-2.5 text-sm transition',
+    'inline-flex items-center rounded-md border px-4 py-2 text-sm transition-colors',
     variant === 'solid'
-      ? 'bg-zinc-100 text-zinc-950 hover:bg-zinc-200'
-      : 'border border-zinc-700 text-zinc-200 hover:bg-zinc-900',
+      ? 'border-blue-500 bg-blue-500/10 text-blue-300 hover:bg-blue-500/20'
+      : 'border-zinc-700 text-zinc-200 hover:bg-zinc-800',
   )
 
   if (external) {
