@@ -1,0 +1,17 @@
+---
+title: "App Router でブログを作るときの設計メモ"
+date: "2026-03-29"
+description: "content ディレクトリ運用、静的生成、メタデータ設計のメモです。"
+---
+
+## ディレクトリを分ける
+
+`content/posts` に MDX を置くと、アプリコードとコンテンツを分離できます。
+
+## 静的生成
+
+`generateStaticParams` で slug の一覧を返すと、ビルド時にページが生成されます。
+
+## まとめ
+
+小さく始めるなら、まずは frontmatter の `title` と `date` があれば十分です。

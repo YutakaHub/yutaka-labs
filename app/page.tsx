@@ -1,3 +1,4 @@
+import Link from 'next/link'
 export default function Home() {
   return (
     <main className="min-h-screen bg-zinc-950 text-zinc-100">
@@ -16,12 +17,12 @@ export default function Home() {
         </p>
 
         <div className="flex gap-4">
-          <a
+          <Link
             href="/blog"
             className="rounded-full border border-zinc-700 px-5 py-3 text-sm hover:bg-zinc-900"
           >
             Blog
-          </a>
+          </Link>
           <a
             href="https://github.com/YutakaHub"
             className="rounded-full bg-white px-5 py-3 text-sm text-black"

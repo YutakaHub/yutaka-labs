@@ -1,17 +1,30 @@
 import Link from 'next/link'
+import { getAllPosts } from '@/lib/posts'
 
-export default function BlogPage() {
+export default async function BlogPage() {
+  const posts = await getAllPosts()
+
   return (
-    <main className="min-h-screen bg-zinc-950 text-zinc-100">
-      <div className="mx-auto max-w-4xl px-6 py-20">
-        <h1 className="mb-10 text-4xl font-semibold">Blog</h1>
+    <main className="min-h-screen bg-black text-zinc-100">
+      <div className="mx-auto max-w-3xl px-6 py-20">
+        <h1 className="mb-10 text-4xl font-semibold tracking-tight">Blog</h1>
 
-        <Link href="/blog/first-post">
-          <div className="rounded-2xl border border-zinc-800 p-6 hover:bg-zinc-900">
-            <p className="text-sm text-zinc-400">2026-04-02</p>
-            <h2 className="text-2xl">Yutaka Labs を作った</h2>
-          </div>
-        </Link>
+        <ul className="space-y-4">
+          {posts.map((post) => (
+            <li key={post.slug}>
+              <Link
+                href={`/blog/${post.slug}`}
+                className="block rounded-2xl border border-zinc-800 bg-zinc-950/60 p-6 transition hover:border-zinc-700 hover:bg-zinc-900"
+              >
+                <p className="text-xs text-zinc-400">
+                  <time dateTime={post.date}>{post.date}</time> ・ {post.readingMinutes} min read
+                </p>
+                <h2 className="mt-2 text-2xl font-medium">{post.title}</h2>
+                <p className="mt-2 text-sm text-zinc-300">{post.description}</p>
+              </Link>
+            </li>
+          ))}
+        </ul>
       </div>
     </main>
   )
