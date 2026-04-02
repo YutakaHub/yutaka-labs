@@ -1,7 +1,8 @@
 import Link from 'next/link'
 import { Container } from '@/components/layout/container'
+import { GitHubAvatar } from '@/components/profile/github-avatar'
 
-export function Header() {
+export async function Header() {
   return (
     <header className="border-b border-zinc-800 bg-zinc-950/95">
       <Container className="flex h-14 items-center justify-between">
@@ -21,6 +22,9 @@ export function Header() {
           >
             GitHub
           </a>
+
+          {/* GitHub風の控えめなアバター表示 */}
+          <GitHubAvatar />
         </nav>
       </Container>
     </header>
