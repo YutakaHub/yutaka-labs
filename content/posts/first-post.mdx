@@ -1,25 +1,28 @@
 ---
-title: "Yutaka Labs を立ち上げた理由"
+title: "Yutaka Labs を始めました"
 date: "2026-04-02"
-description: "このブログを始めた背景と、これから書いていく内容を紹介します。"
+description: "このサイトの目的と、今後どんな技術記事を書いていくかを紹介します。"
+tags: [nextjs, mdx, portfolio]
 ---
 
 ## はじめに
 
-このサイトでは、フロントエンド開発の知見を **短く・実践的に** まとめていきます。
+Yutaka Labs は、**ポートフォリオ + 技術ブログ** を1つにまとめた個人サイトです。
 
-## これから書くこと
+## なぜこの構成にしたか
 
-- Next.js App Router の設計
-- TypeScript の型設計
-- UI 実装のパターン
+- App Router で静的生成しやすい
+- `content/posts` 管理で記事追加が簡単
+- Vercel無料枠でも運用しやすい
 
-## サンプルコード
+## 小さく始める
+
+まずは1記事から始めて、後で RSS / TOC / syntax highlight を段階的に追加する予定です。
 
 ```ts
-const message: string = 'Hello from MDX'
+export const siteName = 'Yutaka Labs'
 
-export function greet(name: string) {
-  return `${message}, ${name}`
+export function getMessage() {
+  return `${siteName} is my development base.`
 }
 ```

@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
+import { Footer } from '@/components/layout/footer'
+import { Header } from '@/components/layout/header'
 import './globals.css'
 
 const geistSans = Geist({
@@ -13,7 +15,7 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://example.com'),
+  metadataBase: new URL('https://yutaka-labs.vercel.app'),
   title: {
     default: 'Yutaka Labs',
     template: '%s | Yutaka Labs',
@@ -42,7 +44,11 @@ export default function RootLayout({
       lang="ja"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full">{children}</body>
+      <body className="min-h-full bg-black text-zinc-100">
+        <Header />
+        <main className="min-h-[calc(100vh-8rem)]">{children}</main>
+        <Footer />
+      </body>
     </html>
   )
 }

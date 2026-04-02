@@ -18,10 +18,10 @@ body {
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
 }
 
-/* prose 互換の最小スタイル */
+/* typography plugin 未導入環境でも崩れにくい最小proseスタイル */
 .prose {
   color: #e4e4e7;
-  line-height: 1.85;
+  line-height: 1.9;
 }
 
 .prose :where(h2, h3) {
@@ -38,24 +38,10 @@ body {
 }
 
 .prose ul {
-  padding-left: 1.25rem;
   list-style: disc;
+  padding-left: 1.25rem;
 }
 
-/* 見出しアンカーの見た目を最小限で調整 */
-.prose .heading-anchor {
-  margin-right: 0.5rem;
-  opacity: 0;
-  text-decoration: none;
-  color: #71717a;
-}
-
-.prose h2:hover .heading-anchor,
-.prose h3:hover .heading-anchor {
-  opacity: 1;
-}
-
-/* コードブロックのダークテーマ */
 .prose pre {
   overflow-x: auto;
   border: 1px solid #27272a;
@@ -64,8 +50,15 @@ body {
   padding: 1rem;
 }
 
-/* 簡易シンタックスハイライト用のキーワード色 */
-.prose code .token-keyword {
-  color: #f472b6;
-  font-weight: 600;
+/* 見出しアンカーの表示 */
+.prose .heading-anchor {
+  margin-right: 0.5rem;
+  text-decoration: none;
+  opacity: 0;
+  color: #71717a;
+}
+
+.prose h2:hover .heading-anchor,
+.prose h3:hover .heading-anchor {
+  opacity: 1;
 }

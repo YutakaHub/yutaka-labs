@@ -1,36 +1,30 @@
-import Link from 'next/link'
-export default function Home() {
-  return (
-    <main className="min-h-screen bg-zinc-950 text-zinc-100">
-      <section className="mx-auto flex max-w-5xl flex-col gap-6 px-6 py-24">
-        <p className="text-sm tracking-[0.2em] text-zinc-400 uppercase">
-          Yutaka Labs
-        </p>
+import { Button } from '@/components/ui/button'
+import { Container } from '@/components/layout/container'
 
-        <h1 className="text-5xl font-semibold tracking-tight sm:text-7xl">
-          Yutaka Nishiwaki
+export default function HomePage() {
+  return (
+    <Container className="py-24">
+      <section className="space-y-8">
+        <p className="text-sm uppercase tracking-[0.25em] text-zinc-500">Yutaka Labs</p>
+
+        <h1 className="max-w-3xl text-5xl font-semibold tracking-tight text-zinc-100 sm:text-6xl">
+          ポートフォリオと技術ブログをまとめた、
+          <br />
+          個人の開発拠点。
         </h1>
 
         <p className="max-w-2xl text-lg leading-8 text-zinc-300">
-          フロントエンド開発、UI設計、React / Next.js を中心に開発しています。
-          個人の開発・実験・記録のためのサイトです。
+          Yutaka Labs は、React / Next.js を中心にした開発記録やUI実験をまとめるサイトです。
+          小さな検証を積み重ねて、再利用できる知見として残していきます。
         </p>
 
-        <div className="flex gap-4">
-          <Link
-            href="/blog"
-            className="rounded-full border border-zinc-700 px-5 py-3 text-sm hover:bg-zinc-900"
-          >
-            Blog
-          </Link>
-          <a
-            href="https://github.com/YutakaHub"
-            className="rounded-full bg-white px-5 py-3 text-sm text-black"
-          >
+        <div className="flex flex-wrap gap-3">
+          <Button href="/blog">ブログを見る</Button>
+          <Button href="https://github.com/YutakaHub" variant="solid" external>
             GitHub
-          </a>
+          </Button>
         </div>
       </section>
-    </main>
+    </Container>
   )
 }

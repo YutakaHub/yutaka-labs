@@ -4,11 +4,15 @@ import { cache } from 'react'
 
 const POSTS_DIR = path.join(process.cwd(), 'content', 'posts')
 
-export type PostMeta = {
-  slug: string
+export type PostFrontmatter = {
   title: string
   date: string
   description: string
+  tags: string[]
+}
+
+export type PostMeta = PostFrontmatter & {
+  slug: string
   readingMinutes: number
 }
 
@@ -16,13 +20,7 @@ export type Post = PostMeta & {
   content: string
 }
 
-type Frontmatter = {
-  title?: string
-  date?: string
-  description?: string
-}
-
-// 記事本文の単語数から読了時間(分)を計算する
+// Markdown本文からおおまかな読了時間(分)を計算する
 function calculateReadingMinutes(content: string): number {
   const words = content
     .replace(/```[\s\S]*?```/g, ' ')
@@ -34,8 +32,26 @@ function calculateReadingMinutes(content: string): number {
   return Math.max(1, Math.ceil(words / 220))
 }
 
-// MDXのfrontmatterを最小構成でパースする
-function parseFrontmatter(raw: string): { frontmatter: Frontmatter; content: string } {
+// frontmatter の tags を文字列配列へ変換する
+function parseTags(value: string | undefined): string[] {
+  if (!value) return []
+
+  if (value.startsWith('[') && value.endsWith(']')) {
+    return value
+      .slice(1, -1)
+      .split(',')
+      .map((tag) => tag.trim().replace(/^['"]|['"]$/g, ''))
+      .filter(Boolean)
+  }
+
+  return value
+    .split(',')
+    .map((tag) => tag.trim())
+    .filter(Boolean)
+}
+
+// gray-matter が使えない環境でも動く最小frontmatterパーサ
+function parseFrontmatter(raw: string): { frontmatter: Partial<PostFrontmatter>; content: string } {
   if (!raw.startsWith('---')) {
     return { frontmatter: {}, content: raw }
   }
@@ -48,20 +64,25 @@ function parseFrontmatter(raw: string): { frontmatter: Frontmatter; content: str
   const rawFrontmatter = raw.slice(4, endIndex).trim()
   const content = raw.slice(endIndex + 4).trimStart()
 
-  const frontmatter = rawFrontmatter.split('\n').reduce<Frontmatter>((acc, line) => {
+  const parsed = rawFrontmatter.split('\n').reduce<Record<string, string>>((acc, line) => {
     const separatorIndex = line.indexOf(':')
     if (separatorIndex === -1) return acc
 
     const key = line.slice(0, separatorIndex).trim()
     const value = line.slice(separatorIndex + 1).trim().replace(/^['"]|['"]$/g, '')
-
-    if (key === 'title' || key === 'date' || key === 'description') {
-      acc[key] = value
-    }
+    acc[key] = value
     return acc
   }, {})
 
-  return { frontmatter, content }
+  return {
+    frontmatter: {
+      title: parsed.title,
+      date: parsed.date,
+      description: parsed.description,
+      tags: parseTags(parsed.tags),
+    },
+    content,
+  }
 }
 
 async function readPostFile(slug: string): Promise<Post> {
@@ -74,6 +95,7 @@ async function readPostFile(slug: string): Promise<Post> {
     title: frontmatter.title ?? slug,
     date: frontmatter.date ?? '1970-01-01',
     description: frontmatter.description ?? '',
+    tags: frontmatter.tags ?? [],
     readingMinutes: calculateReadingMinutes(content),
     content,
   }
@@ -95,6 +117,7 @@ export const getAllPosts = cache(async (): Promise<PostMeta[]> => {
       title: post.title,
       date: post.date,
       description: post.description,
+      tags: post.tags,
       readingMinutes: post.readingMinutes,
     }))
 })
