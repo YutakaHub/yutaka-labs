@@ -1,6 +1,10 @@
-import Link from 'next/link'
+import Box from '@mui/material/Box'
+import CardActionArea from '@mui/material/CardActionArea'
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import NextLink from '@/components/ui/next-link'
 import type { PostMeta } from '@/lib/posts'
 import { formatDate } from '@/lib/utils'
 
@@ -10,22 +14,37 @@ type PostCardProps = {
 
 export function PostCard({ post }: PostCardProps) {
   return (
-    <Link href={`/blog/${post.slug}`} className="block">
-      <Card className="transition-colors hover:bg-zinc-800/60">
-        <div className="flex items-center justify-between gap-3 text-xs text-zinc-400">
-          <time dateTime={post.date}>{formatDate(post.date)}</time>
-          <span>{post.readingMinutes} min read</span>
-        </div>
+    <Card
+      sx={(theme) => ({
+        transition: theme.transitions.create('background-color'),
+        '&:hover': {
+          bgcolor: 'action.hover',
+        },
+      })}
+    >
+      <CardActionArea component={NextLink} href={`/blog/${post.slug}`} sx={{ px: 3, py: 2.5 }}>
+        <Stack spacing={2}>
+          <Box sx={(theme) => theme.appLayouts.metaRow}>
+            <time dateTime={post.date}>{formatDate(post.date)}</time>
+            <span>{post.readingMinutes} min read</span>
+          </Box>
 
-        <h2 className="mt-2 text-xl font-medium text-zinc-100">{post.title}</h2>
-        <p className="mt-2 text-sm text-zinc-400">{post.description}</p>
+          <Box>
+            <Typography variant="h5" sx={{ fontSize: '1.25rem', fontWeight: 500 }}>
+              {post.title}
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+              {post.description}
+            </Typography>
+          </Box>
 
-        <div className="mt-4 flex flex-wrap gap-2">
-          {post.tags.map((tag) => (
-            <Badge key={tag}>#{tag}</Badge>
-          ))}
-        </div>
-      </Card>
-    </Link>
+          <Box sx={(theme) => theme.appLayouts.tagRow}>
+            {post.tags.map((tag) => (
+              <Badge key={tag}>#{tag}</Badge>
+            ))}
+          </Box>
+        </Stack>
+      </CardActionArea>
+    </Card>
   )
 }

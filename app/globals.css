@@ -1,26 +1,12 @@
 @import "tailwindcss";
 
-:root {
-  --background: #09090b;
-  --foreground: #f4f4f5;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
 body {
-  background: var(--background);
-  color: var(--foreground);
   font-family: var(--font-geist-sans), system-ui, sans-serif;
 }
 
 /* タイポグラフィプラグインがない場合でも読みやすい最低限の本文スタイル */
 .prose {
-  color: #e4e4e7;
+  color: var(--mui-palette-text-secondary);
   line-height: 1.9;
 }
 
@@ -29,7 +15,7 @@ body {
   margin-bottom: 0.75rem;
   font-weight: 700;
   letter-spacing: -0.01em;
-  color: #fafafa;
+  color: var(--mui-palette-text-primary);
 }
 
 .prose p,
@@ -40,7 +26,7 @@ body {
 }
 
 .prose a {
-  color: #7dd3fc;
+  color: var(--mui-palette-primary-light);
   text-decoration: underline;
   text-underline-offset: 3px;
 }
@@ -51,17 +37,17 @@ body {
 }
 
 .prose code {
-  border: 1px solid #3f3f46;
+  border: 1px solid var(--mui-palette-divider);
   border-radius: 0.375rem;
-  background: #18181b;
+  background: var(--mui-palette-background-paper);
   padding: 0.1rem 0.35rem;
 }
 
 .prose pre {
   overflow-x: auto;
-  border: 1px solid #27272a;
+  border: 1px solid var(--mui-palette-divider);
   border-radius: 0.5rem;
-  background: #09090b;
+  background: color-mix(in srgb, var(--mui-palette-background-default) 88%, #000 12%);
   padding: 1rem;
 }
 
@@ -75,7 +61,7 @@ body {
   margin-right: 0.5rem;
   text-decoration: none;
   opacity: 0;
-  color: #71717a;
+  color: var(--mui-palette-text-secondary);
 }
 
 .prose h2:hover .heading-anchor,

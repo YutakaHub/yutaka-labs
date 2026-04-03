@@ -1,3 +1,5 @@
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
 import { Container } from '@/components/layout/container'
 import { PostCard } from '@/components/blog/post-card'
 import { getAllPosts } from '@/lib/posts'
@@ -11,19 +13,25 @@ export default async function BlogPage() {
   const posts = await getAllPosts()
 
   return (
-    <Container className="py-16">
-      <section>
-        <h1 className="text-3xl font-semibold tracking-tight text-zinc-100">Blog</h1>
-        <p className="mt-2 text-sm text-zinc-400">GitHubのIssue一覧のように、更新順で記事を並べています。</p>
+    <Container sx={(theme) => ({ py: theme.appLayouts.pageSectionY })}>
+      <Stack component="section" spacing={3}>
+        <div>
+          <Typography variant="h2" sx={{ fontSize: '2rem' }}>
+            Blog
+          </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+            GitHubのIssue一覧のように、更新順で記事を並べています。
+          </Typography>
+        </div>
 
-        <ul className="mt-6 space-y-3">
+        <Stack component="ul" spacing={1.5} sx={{ listStyle: 'none', p: 0, m: 0 }}>
           {posts.map((post) => (
             <li key={post.slug}>
               <PostCard post={post} />
             </li>
           ))}
-        </ul>
-      </section>
+        </Stack>
+      </Stack>
     </Container>
   )
 }

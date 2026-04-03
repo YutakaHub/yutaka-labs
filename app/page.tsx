@@ -1,3 +1,6 @@
+import Box from '@mui/material/Box'
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
 import { Container } from '@/components/layout/container'
 import { Button } from '@/components/ui/button'
 import { GitHubIcon } from '@/components/ui/github-icon'
@@ -5,28 +8,30 @@ import { getGitHubProfileUrl } from '@/lib/github'
 
 export default function HomePage() {
   return (
-    <Container className="py-20">
-      <section className="space-y-6">
-        <p className="text-sm font-medium tracking-wide text-zinc-400">Yutaka Labs</p>
+    <Container sx={(theme) => ({ py: theme.appLayouts.heroSectionY })}>
+      <Stack component="section" spacing={3}>
+        <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500, letterSpacing: '0.08em' }}>
+          Yutaka Labs
+        </Typography>
 
-        <h1 className="max-w-3xl text-4xl font-semibold tracking-tight text-zinc-100 sm:text-5xl">
+        <Typography variant="h1" sx={{ maxWidth: 720, fontSize: { xs: '2.5rem', sm: '3rem' } }}>
           Minimal portfolio & engineering blog.
-        </h1>
+        </Typography>
 
-        <p className="max-w-2xl text-zinc-400">
+        <Typography sx={{ maxWidth: 640 }} color="text.secondary">
           Next.js / TypeScript を軸に、実装メモとポートフォリオをまとめる個人サイトです。
           落ち着いたUIで、読みやすく再利用しやすい知見を蓄積します。
-        </p>
+        </Typography>
 
-        <div className="flex flex-wrap gap-3">
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1.5 }}>
           <Button href="/blog">Blog</Button>
           <Button href={getGitHubProfileUrl()} variant="solid" external>
             GitHub
           </Button>
-        </div>
+        </Box>
 
         <GitHubIcon />
-      </section>
+      </Stack>
     </Container>
   )
 }

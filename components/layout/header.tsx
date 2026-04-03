@@ -1,23 +1,59 @@
-import Link from 'next/link'
+import Box from '@mui/material/Box'
+import Link from '@mui/material/Link'
 import { Container } from '@/components/layout/container'
-import { GitHubAvatar } from '@/components/profile/github-avatar'
-import GitHubIcon from '../ui/github-icon'
+import NextLink from '@/components/ui/next-link'
+import GitHubIcon from '@/components/ui/github-icon'
 
-export async function Header() {
+export function Header() {
   return (
-    <header className="border-b border-zinc-800 bg-zinc-950/95">
-      <Container className="flex h-14 items-center justify-between">
-        <Link href="/" className="text-sm font-semibold tracking-wide text-zinc-100">
+    <Box
+      component="header"
+      sx={{
+        borderBottom: 1,
+        borderColor: 'divider',
+        bgcolor: 'rgba(9, 9, 11, 0.95)',
+        backdropFilter: 'blur(12px)',
+      }}
+    >
+      <Container
+        sx={{
+          minHeight: 56,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}
+      >
+        <Link
+          component={NextLink}
+          href="/"
+          variant="body2"
+          color="text.primary"
+          sx={{ fontWeight: 600, letterSpacing: '0.08em' }}
+        >
           Yutaka Labs
         </Link>
 
-        <nav className="flex items-center gap-4 text-sm text-zinc-400">
-          <Link href="/blog" className="transition-colors hover:text-zinc-100">
+        <Box
+          component="nav"
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 2,
+            color: 'text.secondary',
+          }}
+        >
+          <Link
+            component={NextLink}
+            href="/blog"
+            variant="body2"
+            color="inherit"
+            sx={{ transition: 'color 0.2s ease', '&:hover': { color: 'text.primary' } }}
+          >
             Blog
           </Link>
           <GitHubIcon />
-        </nav>
+        </Box>
       </Container>
-    </header>
+    </Box>
   )
 }

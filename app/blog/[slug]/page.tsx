@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Box from '@mui/material/Box'
 import { notFound } from 'next/navigation'
 import { Container } from '@/components/layout/container'
 import { PostHeader } from '@/components/blog/post-header'
@@ -37,12 +38,14 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const content = await renderMdx(post.content)
 
   return (
-    <Container className="py-16">
+    <Container sx={(theme) => ({ py: theme.appLayouts.pageSectionY })}>
       {/* 記事本文は横幅を制限して可読性を優先 */}
-      <article className="mx-auto max-w-3xl">
+      <Box component="article" sx={(theme) => ({ mx: 'auto', maxWidth: theme.appLayouts.articleMaxWidth })}>
         <PostHeader post={post} />
-        <div className="prose prose-invert max-w-none">{content}</div>
-      </article>
+        <Box className="prose" sx={{ maxWidth: 'none' }}>
+          {content}
+        </Box>
+      </Box>
     </Container>
   )
 }

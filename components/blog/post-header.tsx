@@ -1,3 +1,6 @@
+import Box from '@mui/material/Box'
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
 import { Badge } from '@/components/ui/badge'
 import type { Post } from '@/lib/posts'
 import { formatDate } from '@/lib/utils'
@@ -8,20 +11,32 @@ type PostHeaderProps = {
 
 export function PostHeader({ post }: PostHeaderProps) {
   return (
-    <header className="mb-8 border-b border-zinc-800 pb-6">
-      <div className="flex items-center justify-between gap-3 text-xs text-zinc-400">
+    <Box component="header" sx={{ mb: 8, borderBottom: 1, borderColor: 'divider', pb: 3 }}>
+      <Box sx={(theme) => theme.appLayouts.metaRow}>
         <time dateTime={post.date}>{formatDate(post.date)}</time>
         <span>{post.readingMinutes} min read</span>
-      </div>
+      </Box>
 
-      <h1 className="mt-3 text-3xl font-semibold tracking-tight text-zinc-100 sm:text-4xl">{post.title}</h1>
-      <p className="mt-3 text-zinc-400">{post.description}</p>
+      <Typography variant="h1" sx={{ mt: 2, fontSize: { xs: '2rem', sm: '2.5rem' } }}>
+        {post.title}
+      </Typography>
+      <Typography color="text.secondary" sx={{ mt: 1.5 }}>
+        {post.description}
+      </Typography>
 
-      <div className="mt-4 flex flex-wrap gap-2">
+      <Stack
+        direction="row"
+        useFlexGap
+        flexWrap="wrap"
+        sx={(theme) => ({
+          ...theme.appLayouts.tagRow,
+          mt: 3,
+        })}
+      >
         {post.tags.map((tag) => (
           <Badge key={tag}>#{tag}</Badge>
         ))}
-      </div>
-    </header>
+      </Stack>
+    </Box>
   )
 }

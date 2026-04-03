@@ -1,5 +1,8 @@
 import type { Metadata } from 'next'
+import Box from '@mui/material/Box'
+import { AppRouterCacheProvider } from '@mui/material-nextjs/v1X-appRouter'
 import { Geist, Geist_Mono } from 'next/font/google'
+import { AppThemeProvider } from '@/components/providers/app-theme-provider'
 import { Footer } from '@/components/layout/footer'
 import { Header } from '@/components/layout/header'
 import './globals.css'
@@ -29,14 +32,17 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html
-      lang="ja"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <body className="min-h-full bg-zinc-950 text-zinc-100">
-        <Header />
-        <main className="min-h-[calc(100vh-6.5rem)]">{children}</main>
-        <Footer />
+    <html lang="ja" className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body>
+        <AppRouterCacheProvider options={{ enableCssLayer: true }}>
+          <AppThemeProvider>
+            <Header />
+            <Box component="main" sx={{ minHeight: 'calc(100vh - 6.5rem)' }}>
+              {children}
+            </Box>
+            <Footer />
+          </AppThemeProvider>
+        </AppRouterCacheProvider>
       </body>
     </html>
   )
