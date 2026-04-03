@@ -1,15 +1,11 @@
-import Box from '@mui/material/Box'
-import Typography from '@mui/material/Typography'
 import { Container } from '@/components/layout/container'
 
 export function Footer() {
   return (
-    <Box component="footer" sx={{ borderTop: 1, borderColor: 'divider', py: 3 }}>
+    <footer className="mt-16 border-t border-[var(--border)] py-5">
       <Container>
-        <Typography variant="caption" color="text.secondary">
-          © {new Date().getFullYear()} Yutaka Labs
-        </Typography>
+        <p className="text-xs text-[var(--muted-foreground)]">© {new Date().getFullYear()} Yutaka Labs</p>
       </Container>
-    </Box>
+    </footer>
   )
 }

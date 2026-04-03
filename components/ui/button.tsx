@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
-import MuiButton from '@mui/material/Button'
-import NextLink from '@/components/ui/next-link'
+import Link from 'next/link'
+import { cn } from '@/lib/utils'
 
 type ButtonProps = {
   href: string
@@ -9,31 +9,25 @@ type ButtonProps = {
   external?: boolean
 }
 
-// 無駄な装飾を省いた、ナビゲーション用の小さなボタン
 export function Button({ href, children, variant = 'outline', external = false }: ButtonProps) {
+  const baseClassName = cn(
+    'inline-flex items-center rounded-md border px-3 py-1.5 text-sm font-medium transition-colors',
+    variant === 'solid'
+      ? 'border-[var(--foreground)] bg-[var(--foreground)] text-[var(--background)] hover:opacity-90'
+      : 'border-[var(--border)] bg-[var(--surface)] text-[var(--foreground)] hover:bg-[var(--subtle)]',
+  )
+
   if (external) {
     return (
-      <MuiButton
-        component="a"
-        href={href}
-        target="_blank"
-        rel="noreferrer"
-        variant={variant === 'solid' ? 'contained' : 'outlined'}
-        color={variant === 'solid' ? 'primary' : 'inherit'}
-      >
+      <a href={href} target="_blank" rel="noreferrer" className={baseClassName}>
         {children}
-      </MuiButton>
+      </a>
     )
   }
 
   return (
-    <MuiButton
-      component={NextLink}
-      href={href}
-      variant={variant === 'solid' ? 'contained' : 'outlined'}
-      color={variant === 'solid' ? 'primary' : 'inherit'}
-    >
+    <Link href={href} className={baseClassName}>
       {children}
-    </MuiButton>
+    </Link>
   )
 }

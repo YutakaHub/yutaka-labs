@@ -1,37 +1,29 @@
-import Box from '@mui/material/Box'
-import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
 import { Container } from '@/components/layout/container'
 import { Button } from '@/components/ui/button'
-import { GitHubIcon } from '@/components/ui/github-icon'
 import { getGitHubProfileUrl } from '@/lib/github'
 
 export default function HomePage() {
   return (
-    <Container sx={(theme) => ({ py: theme.appLayouts.heroSectionY })}>
-      <Stack component="section" spacing={3}>
-        <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500, letterSpacing: '0.08em' }}>
-          Yutaka Labs
-        </Typography>
+    <Container className="py-16 sm:py-20">
+      <section className="rounded-xl border border-[var(--border)] bg-[var(--surface)] px-6 py-10 sm:px-8">
+        <p className="text-xs font-semibold tracking-[0.12em] text-[var(--muted-foreground)]">YUTAKA LABS</p>
 
-        <Typography variant="h1" sx={{ maxWidth: 720, fontSize: { xs: '2.5rem', sm: '3rem' } }}>
-          Minimal portfolio & engineering blog.
-        </Typography>
+        <h1 className="mt-3 max-w-3xl text-3xl font-semibold tracking-tight text-[var(--foreground)] sm:text-4xl">
+          ポートフォリオと技術ブログを、静かで実用的なUIで整理する。
+        </h1>
 
-        <Typography sx={{ maxWidth: 640 }} color="text.secondary">
-          Next.js / TypeScript を軸に、実装メモとポートフォリオをまとめる個人サイトです。
-          落ち着いたUIで、読みやすく再利用しやすい知見を蓄積します。
-        </Typography>
+        <p className="mt-4 max-w-2xl text-sm leading-7 text-[var(--muted-foreground)] sm:text-base">
+          Next.js / TypeScript を軸に、実装ノウハウや学習ログを蓄積していく個人サイトです。
+          境界線と余白を基準に、読みやすさと保守性を重視した設計でまとめています。
+        </p>
 
-        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1.5 }}>
+        <div className="mt-6 flex flex-wrap items-center gap-3">
           <Button href="/blog">Blog</Button>
-          <Button href={getGitHubProfileUrl()} variant="solid" external>
+          <Button href={getGitHubProfileUrl()} variant="outline" external>
             GitHub
           </Button>
-        </Box>
-
-        <GitHubIcon />
-      </Stack>
+        </div>
+      </section>
     </Container>
   )
 }

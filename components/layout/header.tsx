@@ -1,59 +1,31 @@
-import Box from '@mui/material/Box'
-import Link from '@mui/material/Link'
+import Link from 'next/link'
+import { ThemeToggle } from '@/components/ui/theme-toggle'
 import { Container } from '@/components/layout/container'
-import NextLink from '@/components/ui/next-link'
-import GitHubIcon from '@/components/ui/github-icon'
+import { getGitHubProfileUrl } from '@/lib/github'
 
 export function Header() {
   return (
-    <Box
-      component="header"
-      sx={{
-        borderBottom: 1,
-        borderColor: 'divider',
-        bgcolor: 'rgba(9, 9, 11, 0.95)',
-        backdropFilter: 'blur(12px)',
-      }}
-    >
-      <Container
-        sx={{
-          minHeight: 56,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-        }}
-      >
-        <Link
-          component={NextLink}
-          href="/"
-          variant="body2"
-          color="text.primary"
-          sx={{ fontWeight: 600, letterSpacing: '0.08em' }}
-        >
+    <header className="border-b border-[var(--border)] bg-[var(--background)]/95 backdrop-blur">
+      <Container className="flex h-14 items-center justify-between">
+        <Link href="/" className="text-sm font-semibold tracking-wide text-[var(--foreground)]">
           Yutaka Labs
         </Link>
 
-        <Box
-          component="nav"
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 2,
-            color: 'text.secondary',
-          }}
-        >
-          <Link
-            component={NextLink}
-            href="/blog"
-            variant="body2"
-            color="inherit"
-            sx={{ transition: 'color 0.2s ease', '&:hover': { color: 'text.primary' } }}
-          >
+        <nav className="flex items-center gap-3 text-sm text-[var(--muted-foreground)]">
+          <Link href="/blog" className="rounded px-1.5 py-1 transition-colors hover:text-[var(--foreground)]">
             Blog
           </Link>
-          <GitHubIcon />
-        </Box>
+          <a
+            href={getGitHubProfileUrl()}
+            target="_blank"
+            rel="noreferrer"
+            className="rounded px-1.5 py-1 transition-colors hover:text-[var(--foreground)]"
+          >
+            GitHub
+          </a>
+          <ThemeToggle />
+        </nav>
       </Container>
-    </Box>
+    </header>
   )
 }
