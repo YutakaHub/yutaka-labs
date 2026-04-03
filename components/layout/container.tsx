@@ -1,17 +1,11 @@
 import type { ReactNode } from 'react'
-import MuiContainer from '@mui/material/Container'
-import type { SxProps, Theme } from '@mui/material/styles'
+import { cn } from '@/lib/utils'
 
 type ContainerProps = {
   children: ReactNode
   className?: string
-  sx?: SxProps<Theme>
 }
 
-export function Container({ children, className, sx }: ContainerProps) {
-  return (
-    <MuiContainer maxWidth="md" className={className} sx={[{ px: { xs: 3, sm: 4 } }, sx]}>
-      {children}
-    </MuiContainer>
-  )
+export function Container({ children, className }: ContainerProps) {
+  return <div className={cn('mx-auto w-full max-w-5xl px-6', className)}>{children}</div>
 }
