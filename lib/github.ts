@@ -4,6 +4,9 @@ export type GitHubUser = {
   name: string | null
   html_url: string
   bio: string | null
+  followers: number
+  following: number
+  public_repos: number
 }
 
 export const DEFAULT_GITHUB_USERNAME = 'YutakaHub'
@@ -47,6 +50,9 @@ export async function getGitHubUser(
       name: data.name,
       html_url: data.html_url,
       bio: data.bio,
+      followers: data.followers,
+      following: data.following,
+      public_repos: data.public_repos,
     }
   } catch {
     // 通信エラー時は null を返し、UI側でフォールバック表示する

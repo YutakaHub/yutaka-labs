@@ -1,8 +1,9 @@
 import { Container } from '@/components/layout/container'
+import { GitHubProfileCard } from '@/components/profile/github-profile-card'
 import { Button } from '@/components/ui/button'
 import { getGitHubProfileUrl } from '@/lib/github'
 
-export default function HomePage() {
+export default async function HomePage() {
   return (
     <Container className="py-16 sm:py-20">
       <section className="rounded-xl border border-[var(--border)] bg-[var(--surface)] px-6 py-10 sm:px-8">
@@ -23,6 +24,7 @@ export default function HomePage() {
             GitHub
           </Button>
         </div>
+        <GitHubProfileCard />
       </section>
     </Container>
   )
