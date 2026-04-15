@@ -33,7 +33,11 @@ export default function LanguagesPage() {
       ) : null}
 
       {response?.contributionSummary ? (
-        <ContributionRadarChart metrics={response.contributionSummary.metrics} />
+        <ContributionRadarChart
+          metrics={response.contributionSummary.metrics}
+          hasAnyRestrictedContributions={response.contributionSummary.hasAnyRestrictedContributions}
+          restrictedContributionsCount={response.contributionSummary.restrictedContributionsCount}
+        />
       ) : null}
 
       {response?.codingActivity ? (

@@ -19,6 +19,8 @@ export type ContributionSummary = {
   issues: number
   total: number
   metrics: ContributionMetric[]
+  hasAnyRestrictedContributions: boolean
+  restrictedContributionsCount: number
 }
 
 export type CodingActivitySummary = {

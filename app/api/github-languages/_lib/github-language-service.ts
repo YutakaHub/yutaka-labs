@@ -40,6 +40,8 @@ type GraphQLContributionCollection = {
   totalPullRequestContributions: number
   totalPullRequestReviewContributions: number
   totalIssueContributions: number
+  hasAnyRestrictedContributions: boolean
+  restrictedContributionsCount: number
 }
 
 type GraphQLResponse = {
@@ -242,6 +244,8 @@ export async function fetchContributionSummary(
           totalPullRequestContributions
           totalPullRequestReviewContributions
           totalIssueContributions
+          hasAnyRestrictedContributions
+          restrictedContributionsCount
         }
       }
     }
@@ -309,6 +313,8 @@ export async function fetchContributionSummary(
   const reviews = collection.totalPullRequestReviewContributions
   const issues = collection.totalIssueContributions
   const total = commits + pullRequests + reviews + issues
+  const hasAnyRestrictedContributions = collection.hasAnyRestrictedContributions
+  const restrictedContributionsCount = collection.restrictedContributionsCount
 
   const toPercent = (value: number) => (total > 0 ? (value / total) * 100 : 0)
 
@@ -321,6 +327,8 @@ export async function fetchContributionSummary(
       reviews,
       issues,
       total,
+      hasAnyRestrictedContributions,
+      restrictedContributionsCount,
       metrics: [
         { key: 'commits', label: 'Commits', count: commits, percent: toPercent(commits) },
         { key: 'issues', label: 'Issues', count: issues, percent: toPercent(issues) },

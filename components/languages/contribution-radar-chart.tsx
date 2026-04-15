@@ -4,6 +4,8 @@ import type { ContributionMetric } from '@/lib/github-language'
 
 type ContributionRadarChartProps = {
   metrics: ContributionMetric[]
+  hasAnyRestrictedContributions?: boolean
+  restrictedContributionsCount?: number
 }
 
 function clampPercent(value: number) {
@@ -30,7 +32,11 @@ function toPoint(
   return `${center - radius},${center}`
 }
 
-export function ContributionRadarChart({ metrics }: ContributionRadarChartProps) {
+export function ContributionRadarChart({
+  metrics,
+  hasAnyRestrictedContributions = false,
+  restrictedContributionsCount = 0,
+}: ContributionRadarChartProps) {
   const center = 120
   const maxRadius = 72
 
@@ -56,6 +62,14 @@ export function ContributionRadarChart({ metrics }: ContributionRadarChartProps)
       <p className="mt-1 text-xs text-[var(--muted-foreground)]">
         Commit / PR / Review / Issue の比率を簡易グラフで表示しています。
       </p>
+
+
+      {hasAnyRestrictedContributions ? (
+        <p className="mt-2 text-xs text-amber-400">
+          ※ 非公開や権限制限付きの貢献が {restrictedContributionsCount.toLocaleString('ja-JP')} 件あるため、
+          表示値が GitHub プロフィールと完全一致しない場合があります。
+        </p>
+      ) : null}
 
       <div className="mt-4 flex items-center justify-center">
         <svg viewBox="0 0 240 240" className="h-64 w-64" aria-label="Contribution balance radar chart">
