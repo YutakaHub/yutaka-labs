@@ -1,5 +1,4 @@
 import { Container } from '@/components/layout/container'
-import { GitHubProfileCard } from '@/components/profile/github-profile-card'
 import { Button } from '@/components/ui/button'
 import { getGitHubProfileUrl } from '@/lib/github'
 
@@ -28,8 +27,6 @@ export default function HomePage() {
           </Button>
         </div>
 
-        {/* Home タブの内容として、プロフィール要約はこのページに残す */}
-        <GitHubProfileCard />
       </section>
     </Container>
   )
