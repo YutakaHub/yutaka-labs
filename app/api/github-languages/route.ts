@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import {
   aggregateCodingActivity,
   aggregateLanguageStats,
+  fetchContributionSummary,
   fetchGitHubRepos,
   fetchGitHubUser,
   fetchRepoContributorStats,
@@ -47,7 +48,10 @@ export async function GET() {
     )
   }
 
-  const reposResult = await fetchGitHubRepos(username, token)
+  const [reposResult, contributionSummaryResult] = await Promise.all([
+    fetchGitHubRepos(username, token),
+    fetchContributionSummary(username, token),
+  ])
 
   if (!reposResult.ok) {
     if (reposResult.isRateLimited) {
@@ -60,7 +64,23 @@ export async function GET() {
     )
   }
 
+  if (!contributionSummaryResult.ok) {
+    if (contributionSummaryResult.isRateLimited) {
+      return jsonError('GitHub API のレート制限に達しました。時間を置いて再試行してください。', 429)
+    }
+
+    return jsonError(
+      `貢献情報の取得に失敗しました: ${contributionSummaryResult.errorMessage ?? 'unknown error'}`,
+      502,
+    )
+  }
+
   const repos = reposResult.data ?? []
+  const contributionSummary = contributionSummaryResult.data
+
+  if (!contributionSummary) {
+    return jsonError('貢献情報の取得結果が空でした。', 502)
+  }
 
   if (repos.length === 0) {
     return NextResponse.json({
@@ -71,6 +91,7 @@ export async function GET() {
         deletions: 0,
         touchedRepos: 0,
       },
+      contributionSummary,
       visibility: 'public_and_private_owner',
     })
   }
@@ -126,6 +147,7 @@ export async function GET() {
   return NextResponse.json({
     languages: stats,
     codingActivity,
+    contributionSummary,
     visibility: 'public_and_private_owner',
   })
 }

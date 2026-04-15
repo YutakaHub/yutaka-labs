@@ -1,7 +1,12 @@
 'use client'
 
+import { ContributionRadarChart } from '@/components/languages/contribution-radar-chart'
 import { useEffect, useMemo, useState } from 'react'
-import type { CodingActivitySummary, LanguageStat } from '@/lib/github-language'
+import type {
+  CodingActivitySummary,
+  ContributionSummary,
+  LanguageStat,
+} from '@/lib/github-language'
 
 type ApiError = {
   error?: string
@@ -10,6 +15,7 @@ type ApiError = {
 type LanguagesApiResponse = {
   languages: LanguageStat[]
   codingActivity: CodingActivitySummary
+  contributionSummary: ContributionSummary
   visibility: 'public_and_private_owner'
 }
 
@@ -18,6 +24,7 @@ export default function LanguagesPage() {
   const [error, setError] = useState<string | null>(null)
   const [stats, setStats] = useState<LanguageStat[]>([])
   const [codingActivity, setCodingActivity] = useState<CodingActivitySummary | null>(null)
+  const [contributionSummary, setContributionSummary] = useState<ContributionSummary | null>(null)
 
   const totalBytes = useMemo(
     () => stats.reduce((sum, item) => sum + item.bytes, 0),
@@ -40,16 +47,19 @@ export default function LanguagesPage() {
         setError(errorJson.error ?? 'データの取得に失敗しました。')
         setStats([])
         setCodingActivity(null)
+        setContributionSummary(null)
         return
       }
 
       const data = (await response.json()) as LanguagesApiResponse
       setStats(data.languages)
       setCodingActivity(data.codingActivity)
+      setContributionSummary(data.contributionSummary)
     } catch {
       setError('通信エラーが発生しました。ネットワーク状態を確認してください。')
       setStats([])
       setCodingActivity(null)
+      setContributionSummary(null)
     } finally {
       setLoading(false)
     }
@@ -74,6 +84,10 @@ export default function LanguagesPage() {
         <p className="mt-4 rounded-md border border-red-300 bg-red-50 px-3 py-2 text-sm text-red-700">
           {error}
         </p>
+      ) : null}
+
+      {contributionSummary ? (
+        <ContributionRadarChart metrics={contributionSummary.metrics} />
       ) : null}
 
       {codingActivity ? (

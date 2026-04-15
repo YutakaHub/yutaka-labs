@@ -4,6 +4,22 @@ export type LanguageStat = {
   percent: number
 }
 
+export type ContributionMetric = {
+  key: 'commits' | 'pull_requests' | 'reviews' | 'issues'
+  label: string
+  count: number
+  percent: number
+}
+
+export type ContributionSummary = {
+  commits: number
+  pullRequests: number
+  reviews: number
+  issues: number
+  total: number
+  metrics: ContributionMetric[]
+}
+
 export type CodingActivitySummary = {
   commits: number
   additions: number
@@ -42,6 +58,22 @@ type GitHubApiError = {
   message?: string
 }
 
+type GraphQLContributionCollection = {
+  totalCommitContributions: number
+  totalPullRequestContributions: number
+  totalPullRequestReviewContributions: number
+  totalIssueContributions: number
+}
+
+type GraphQLResponse = {
+  data?: {
+    user?: {
+      contributionsCollection?: GraphQLContributionCollection
+    }
+  }
+  errors?: Array<{ message?: string }>
+}
+
 type FetchGitHubOptions = {
   token: string
 }
@@ -55,6 +87,7 @@ export type GitHubFetchResult<T> = {
 }
 
 const GITHUB_API_BASE = 'https://api.github.com'
+const GITHUB_GRAPHQL_ENDPOINT = 'https://api.github.com/graphql'
 
 function buildGitHubHeaders(token: string): HeadersInit {
   return {
@@ -211,6 +244,113 @@ export async function fetchRepoContributorStats(
     ok: true,
     status: response.status,
     data,
+    errorMessage: null,
+    isRateLimited,
+  }
+}
+
+export async function fetchContributionSummary(
+  username: string,
+  token: string,
+): Promise<GitHubFetchResult<ContributionSummary>> {
+  const to = new Date()
+  const from = new Date(to)
+  from.setFullYear(to.getFullYear() - 1)
+
+  const query = `
+    query ContributionSummary($username: String!, $from: DateTime!, $to: DateTime!) {
+      user(login: $username) {
+        contributionsCollection(from: $from, to: $to) {
+          totalCommitContributions
+          totalPullRequestContributions
+          totalPullRequestReviewContributions
+          totalIssueContributions
+        }
+      }
+    }
+  `
+
+  const response = await fetch(GITHUB_GRAPHQL_ENDPOINT, {
+    method: 'POST',
+    cache: 'no-store',
+    headers: {
+      ...buildGitHubHeaders(token),
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      query,
+      variables: {
+        username,
+        from: from.toISOString(),
+        to: to.toISOString(),
+      },
+    }),
+  })
+
+  const isRateLimited =
+    response.status === 429
+    || (response.status === 403
+      && response.headers.get('x-ratelimit-remaining') === '0')
+
+  if (!response.ok) {
+    return {
+      ok: false,
+      status: response.status,
+      data: null,
+      errorMessage: `GitHub GraphQL request failed: ${response.status}`,
+      isRateLimited,
+    }
+  }
+
+  const data = (await response.json()) as GraphQLResponse
+
+  if (data.errors && data.errors.length > 0) {
+    const message = data.errors[0]?.message ?? 'GitHub GraphQL returned an unknown error.'
+    return {
+      ok: false,
+      status: 502,
+      data: null,
+      errorMessage: message,
+      isRateLimited,
+    }
+  }
+
+  const collection = data.data?.user?.contributionsCollection
+
+  if (!collection) {
+    return {
+      ok: false,
+      status: 404,
+      data: null,
+      errorMessage: 'Contribution data was not found.',
+      isRateLimited,
+    }
+  }
+
+  const commits = collection.totalCommitContributions
+  const pullRequests = collection.totalPullRequestContributions
+  const reviews = collection.totalPullRequestReviewContributions
+  const issues = collection.totalIssueContributions
+  const total = commits + pullRequests + reviews + issues
+
+  const toPercent = (value: number) => (total > 0 ? (value / total) * 100 : 0)
+
+  return {
+    ok: true,
+    status: 200,
+    data: {
+      commits,
+      pullRequests,
+      reviews,
+      issues,
+      total,
+      metrics: [
+        { key: 'commits', label: 'Commits', count: commits, percent: toPercent(commits) },
+        { key: 'issues', label: 'Issues', count: issues, percent: toPercent(issues) },
+        { key: 'pull_requests', label: 'Pull Requests', count: pullRequests, percent: toPercent(pullRequests) },
+        { key: 'reviews', label: 'Code Reviews', count: reviews, percent: toPercent(reviews) },
+      ],
+    },
     errorMessage: null,
     isRateLimited,
   }
