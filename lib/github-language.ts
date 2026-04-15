@@ -27,6 +27,13 @@ export type CodingActivitySummary = {
   touchedRepos: number
 }
 
+export type LanguagesApiResponse = {
+  languages: LanguageStat[]
+  codingActivity: CodingActivitySummary
+  contributionSummary: ContributionSummary
+  visibility: 'public_and_private_owner'
+}
+
 type GitHubRepo = {
   name: string
   private: boolean
