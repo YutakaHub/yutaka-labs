@@ -63,7 +63,7 @@ export default function LanguagesPage() {
     <main className="mx-auto max-w-3xl px-6 py-12">
       <h1 className="text-2xl font-bold">GitHub Language Stats</h1>
       <p className="mt-2 text-sm text-[var(--muted-foreground)]">
-        公開 + 非公開（owner）のリポジトリを対象に、言語使用率と自分のコーディング量を表示します。
+        公開 + 非公開（owner）のリポジトリから取得した言語バイト数を合算し、言語の割合を表示します。
       </p>
 
       {loading ? (
@@ -78,7 +78,7 @@ export default function LanguagesPage() {
 
       {codingActivity ? (
         <section className="mt-6 rounded-lg border border-[var(--border)] bg-[var(--surface)] p-4">
-          <h2 className="text-sm font-semibold text-[var(--foreground)]">あなたのコーディング量（推定）</h2>
+          <h2 className="text-sm font-semibold text-[var(--foreground)]">あなたのコーディング量（推定・参考情報）</h2>
           <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-[var(--muted-foreground)]">
             <li>コミット数: {codingActivity.commits.toLocaleString('ja-JP')}</li>
             <li>追加行数: {codingActivity.additions.toLocaleString('ja-JP')}</li>
@@ -90,11 +90,11 @@ export default function LanguagesPage() {
 
       <section className="mt-6 rounded-lg border border-[var(--border)] bg-[var(--surface)] p-4">
         {/* 一覧に表示している数値の意味を先に説明し、初見でも読み取りやすくする */}
-        <h2 className="text-sm font-semibold text-[var(--foreground)]">この一覧で分かること</h2>
+        <h2 className="text-sm font-semibold text-[var(--foreground)]">この一覧で分かること（リポジトリ単位の言語内訳）</h2>
         <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-[var(--muted-foreground)]">
           <li>name: 使用言語の名前です（例: TypeScript）。</li>
-          <li>bytes: リポジトリ内でその言語が占めるコード量（バイト数）です。</li>
-          <li>percent: 全言語合計に対する、その言語の割合です。</li>
+          <li>bytes: 対象リポジトリ群でその言語が占める合計コード量（バイト数）です。</li>
+          <li>percent: 全リポジトリの全言語合計に対する、その言語の割合です。</li>
         </ul>
       </section>
 
