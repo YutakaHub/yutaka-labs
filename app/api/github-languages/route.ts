@@ -6,6 +6,7 @@ import {
   fetchRepoLanguages,
   type LanguageStat,
 } from '@/lib/github-language'
+import { getServerEnv } from '@/lib/server-env'
 
 function jsonError(message: string, status: number) {
   return NextResponse.json(
@@ -17,8 +18,8 @@ function jsonError(message: string, status: number) {
 }
 
 export async function GET() {
-  const token = process.env.GITHUB_TOKEN
-  const username = process.env.GITHUB_USERNAME?.trim()
+  const token = getServerEnv('GITHUB_TOKEN')
+  const username = getServerEnv('GITHUB_USERNAME')?.trim()
 
   if (!token) {
     return jsonError('サーバー環境変数 GITHUB_TOKEN が設定されていません。', 500)
