@@ -16,18 +16,16 @@ function jsonError(message: string, status: number) {
   )
 }
 
-export async function GET(request: Request) {
+export async function GET() {
   const token = process.env.GITHUB_TOKEN
+  const username = process.env.GITHUB_USERNAME?.trim()
 
   if (!token) {
     return jsonError('サーバー環境変数 GITHUB_TOKEN が設定されていません。', 500)
   }
 
-  const { searchParams } = new URL(request.url)
-  const username = searchParams.get('username')?.trim()
-
   if (!username) {
-    return jsonError('username クエリパラメータは必須です。', 400)
+    return jsonError('サーバー環境変数 GITHUB_USERNAME が設定されていません。', 500)
   }
 
   const userResult = await fetchGitHubUser(username, token)

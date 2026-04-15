@@ -1,6 +1,6 @@
 'use client'
 
-import { FormEvent, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import type { LanguageStat } from '@/lib/github-language'
 
 type ApiError = {
@@ -8,7 +8,6 @@ type ApiError = {
 }
 
 export default function HomePage() {
-  const [username, setUsername] = useState('YutakaHub')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [stats, setStats] = useState<LanguageStat[]>([])
@@ -18,28 +17,16 @@ export default function HomePage() {
     [stats],
   )
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-
-    const trimmedUsername = username.trim()
-    if (!trimmedUsername) {
-      setError('username を入力してください。')
-      setStats([])
-      return
-    }
-
+  const fetchLanguageStats = async () => {
     setLoading(true)
     setError(null)
 
     try {
       // ブラウザ側は自前APIだけを叩き、GitHub APIはサーバー側に閉じ込める
-      const response = await fetch(
-        `/api/github-languages?username=${encodeURIComponent(trimmedUsername)}`,
-        {
-          method: 'GET',
-          cache: 'no-store',
-        },
-      )
+      const response = await fetch('/api/github-languages', {
+        method: 'GET',
+        cache: 'no-store',
+      })
 
       if (!response.ok) {
         const errorJson = (await response.json()) as ApiError
@@ -58,29 +45,29 @@ export default function HomePage() {
     }
   }
 
+  useEffect(() => {
+    void fetchLanguageStats()
+  }, [])
+
   return (
     <main className="mx-auto max-w-3xl px-6 py-12">
       <h1 className="text-2xl font-bold">GitHub Language Stats</h1>
       <p className="mt-2 text-sm text-[var(--muted-foreground)]">
-        GitHub ユーザーの公開リポジトリ言語使用率を表示します。
+        環境変数に設定した GitHub ユーザーの公開リポジトリ言語使用率を表示します。
       </p>
 
-      <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-3 sm:flex-row">
-        <input
-          type="text"
-          value={username}
-          onChange={(event) => setUsername(event.target.value)}
-          placeholder="GitHub username"
-          className="w-full rounded-md border border-[var(--border)] bg-[var(--surface)] px-3 py-2"
-        />
+      <div className="mt-6">
         <button
-          type="submit"
+          type="button"
+          onClick={() => {
+            void fetchLanguageStats()
+          }}
           disabled={loading}
           className="rounded-md border border-[var(--border)] bg-[var(--foreground)] px-4 py-2 text-[var(--background)] disabled:opacity-60"
         >
-          {loading ? '取得中...' : '取得'}
+          {loading ? '更新中...' : '再取得'}
         </button>
-      </form>
+      </div>
 
       {loading ? (
         <p className="mt-4 text-sm">ローディング中...</p>
@@ -97,7 +84,7 @@ export default function HomePage() {
 
         {!loading && !error && stats.length === 0 ? (
           <p className="mt-2 text-sm text-[var(--muted-foreground)]">
-            まだ結果がありません。ユーザー名を入力して取得してください。
+            集計結果がありません。公開リポジトリと言語情報を確認してください。
           </p>
         ) : null}
 
