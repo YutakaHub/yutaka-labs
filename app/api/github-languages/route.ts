@@ -7,7 +7,7 @@ import {
   fetchGitHubUser,
   fetchRepoContributorStats,
   fetchRepoLanguages,
-} from '@/lib/github-language'
+} from '@/app/api/github-languages/_lib/github-language-service'
 import { getServerEnv } from '@/lib/server-env'
 
 function jsonError(message: string, status: number) {
