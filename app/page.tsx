@@ -1,114 +1,36 @@
-'use client'
-
-import { useEffect, useMemo, useState } from 'react'
-import type { LanguageStat } from '@/lib/github-language'
-
-type ApiError = {
-  error?: string
-}
+import { Container } from '@/components/layout/container'
+import { GitHubProfileCard } from '@/components/profile/github-profile-card'
+import { Button } from '@/components/ui/button'
+import { getGitHubProfileUrl } from '@/lib/github'
 
 export default function HomePage() {
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [stats, setStats] = useState<LanguageStat[]>([])
-
-  const totalBytes = useMemo(
-    () => stats.reduce((sum, item) => sum + item.bytes, 0),
-    [stats],
-  )
-
-  const fetchLanguageStats = async () => {
-    setLoading(true)
-    setError(null)
-
-    try {
-      // ブラウザ側は自前APIだけを叩き、GitHub APIはサーバー側に閉じ込める
-      const response = await fetch('/api/github-languages', {
-        method: 'GET',
-        cache: 'no-store',
-      })
-
-      if (!response.ok) {
-        const errorJson = (await response.json()) as ApiError
-        setError(errorJson.error ?? 'データの取得に失敗しました。')
-        setStats([])
-        return
-      }
-
-      const data = (await response.json()) as LanguageStat[]
-      setStats(data)
-    } catch {
-      setError('通信エラーが発生しました。ネットワーク状態を確認してください。')
-      setStats([])
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  useEffect(() => {
-    void fetchLanguageStats()
-  }, [])
-
   return (
-    <main className="mx-auto max-w-3xl px-6 py-12">
-      <h1 className="text-2xl font-bold">GitHub Language Stats</h1>
-      <p className="mt-2 text-sm text-[var(--muted-foreground)]">
-        環境変数に設定した GitHub ユーザーの公開リポジトリ言語使用率を表示します。
-      </p>
+    <Container className="py-16 sm:py-20">
+      <section className="rounded-xl border border-[var(--border)] bg-[var(--surface)] px-6 py-10 sm:px-8">
+        <p className="text-xs font-semibold tracking-[0.12em] text-[var(--muted-foreground)]">YUTAKA LABS</p>
 
-      <div className="mt-6">
-        <button
-          type="button"
-          onClick={() => {
-            void fetchLanguageStats()
-          }}
-          disabled={loading}
-          className="rounded-md border border-[var(--border)] bg-[var(--foreground)] px-4 py-2 text-[var(--background)] disabled:opacity-60"
-        >
-          {loading ? '更新中...' : '再取得'}
-        </button>
-      </div>
+        <h1 className="mt-3 max-w-3xl text-3xl font-semibold tracking-tight text-[var(--foreground)] sm:text-4xl">
+          ポートフォリオと技術ブログを、静かで実用的なUIで整理する。
+        </h1>
 
-      {loading ? (
-        <p className="mt-4 text-sm">ローディング中...</p>
-      ) : null}
-
-      {error ? (
-        <p className="mt-4 rounded-md border border-red-300 bg-red-50 px-3 py-2 text-sm text-red-700">
-          {error}
+        <p className="mt-4 max-w-2xl text-sm leading-7 text-[var(--muted-foreground)] sm:text-base">
+          Next.js / TypeScript を軸に、実装ノウハウや学習ログを蓄積していく個人サイトです。
+          境界線と余白を基準に、読みやすさと保守性を重視した設計でまとめています。
         </p>
-      ) : null}
 
-      <section className="mt-6">
-        <h2 className="text-lg font-semibold">結果一覧</h2>
+        <div className="mt-6 flex flex-wrap items-center gap-3">
+          <Button href="/blog">Blog</Button>
+          <Button href="/languages" variant="outline">
+            Language Stats
+          </Button>
+          <Button href={getGitHubProfileUrl()} variant="outline" external>
+            GitHub
+          </Button>
+        </div>
 
-        {!loading && !error && stats.length === 0 ? (
-          <p className="mt-2 text-sm text-[var(--muted-foreground)]">
-            集計結果がありません。公開リポジトリと言語情報を確認してください。
-          </p>
-        ) : null}
-
-        {stats.length > 0 ? (
-          <>
-            <p className="mt-2 text-sm text-[var(--muted-foreground)]">
-              合計: {totalBytes.toLocaleString('ja-JP')} bytes
-            </p>
-            <ul className="mt-3 space-y-2">
-              {stats.map((stat) => (
-                <li key={stat.name} className="rounded-md border border-[var(--border)] bg-[var(--surface)] p-3">
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="font-medium">{stat.name}</span>
-                    <span className="text-sm text-[var(--muted-foreground)]">{stat.percent.toFixed(1)}%</span>
-                  </div>
-                  <p className="mt-1 text-sm text-[var(--muted-foreground)]">
-                    {stat.bytes.toLocaleString('ja-JP')} bytes
-                  </p>
-                </li>
-              ))}
-            </ul>
-          </>
-        ) : null}
+        {/* Home タブの内容として、プロフィール要約はこのページに残す */}
+        <GitHubProfileCard />
       </section>
-    </main>
+    </Container>
   )
 }
