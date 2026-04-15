@@ -1,16 +1,23 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
-import type { LanguageStat } from '@/lib/github-language'
+import type { CodingActivitySummary, LanguageStat } from '@/lib/github-language'
 
 type ApiError = {
   error?: string
+}
+
+type LanguagesApiResponse = {
+  languages: LanguageStat[]
+  codingActivity: CodingActivitySummary
+  visibility: 'public_and_private_owner'
 }
 
 export default function LanguagesPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [stats, setStats] = useState<LanguageStat[]>([])
+  const [codingActivity, setCodingActivity] = useState<CodingActivitySummary | null>(null)
 
   const totalBytes = useMemo(
     () => stats.reduce((sum, item) => sum + item.bytes, 0),
@@ -32,14 +39,17 @@ export default function LanguagesPage() {
         const errorJson = (await response.json()) as ApiError
         setError(errorJson.error ?? 'データの取得に失敗しました。')
         setStats([])
+        setCodingActivity(null)
         return
       }
 
-      const data = (await response.json()) as LanguageStat[]
-      setStats(data)
+      const data = (await response.json()) as LanguagesApiResponse
+      setStats(data.languages)
+      setCodingActivity(data.codingActivity)
     } catch {
       setError('通信エラーが発生しました。ネットワーク状態を確認してください。')
       setStats([])
+      setCodingActivity(null)
     } finally {
       setLoading(false)
     }
@@ -53,9 +63,8 @@ export default function LanguagesPage() {
     <main className="mx-auto max-w-3xl px-6 py-12">
       <h1 className="text-2xl font-bold">GitHub Language Stats</h1>
       <p className="mt-2 text-sm text-[var(--muted-foreground)]">
-        環境変数に設定した GitHub ユーザーの公開リポジトリ言語使用率を表示します。
+        公開 + 非公開（owner）のリポジトリを対象に、言語使用率と自分のコーディング量を表示します。
       </p>
-
 
       {loading ? (
         <p className="mt-4 text-sm">ローディング中...</p>
@@ -67,6 +76,17 @@ export default function LanguagesPage() {
         </p>
       ) : null}
 
+      {codingActivity ? (
+        <section className="mt-6 rounded-lg border border-[var(--border)] bg-[var(--surface)] p-4">
+          <h2 className="text-sm font-semibold text-[var(--foreground)]">あなたのコーディング量（推定）</h2>
+          <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-[var(--muted-foreground)]">
+            <li>コミット数: {codingActivity.commits.toLocaleString('ja-JP')}</li>
+            <li>追加行数: {codingActivity.additions.toLocaleString('ja-JP')}</li>
+            <li>削除行数: {codingActivity.deletions.toLocaleString('ja-JP')}</li>
+            <li>対象リポジトリ数: {codingActivity.touchedRepos.toLocaleString('ja-JP')}</li>
+          </ul>
+        </section>
+      ) : null}
 
       <section className="mt-6 rounded-lg border border-[var(--border)] bg-[var(--surface)] p-4">
         {/* 一覧に表示している数値の意味を先に説明し、初見でも読み取りやすくする */}
@@ -83,7 +103,7 @@ export default function LanguagesPage() {
 
         {!loading && !error && stats.length === 0 ? (
           <p className="mt-2 text-sm text-[var(--muted-foreground)]">
-            集計結果がありません。公開リポジトリと言語情報を確認してください。
+            集計結果がありません。公開/非公開リポジトリと言語情報を確認してください。
           </p>
         ) : null}
 

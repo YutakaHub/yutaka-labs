@@ -1,10 +1,11 @@
 import { NextResponse } from 'next/server'
 import {
+  aggregateCodingActivity,
   aggregateLanguageStats,
   fetchGitHubRepos,
   fetchGitHubUser,
+  fetchRepoContributorStats,
   fetchRepoLanguages,
-  type LanguageStat,
 } from '@/lib/github-language'
 import { getServerEnv } from '@/lib/server-env'
 
@@ -62,14 +63,31 @@ export async function GET() {
   const repos = reposResult.data ?? []
 
   if (repos.length === 0) {
-    return NextResponse.json([] satisfies LanguageStat[])
+    return NextResponse.json({
+      languages: [],
+      codingActivity: {
+        commits: 0,
+        additions: 0,
+        deletions: 0,
+        touchedRepos: 0,
+      },
+      visibility: 'public_and_private_owner',
+    })
   }
 
-  const languageResponses = await Promise.all(
-    repos.map((repo) => fetchRepoLanguages(repo.owner.login, repo.name, token)),
+  const [languageResponses, contributorResponses] = await Promise.all([
+    Promise.all(
+      repos.map((repo) => fetchRepoLanguages(repo.owner.login, repo.name, token)),
+    ),
+    Promise.all(
+      repos.map((repo) => fetchRepoContributorStats(repo.owner.login, repo.name, token)),
+    ),
+  ])
+
+  const rateLimited = [...languageResponses, ...contributorResponses].find(
+    (response) => response.isRateLimited,
   )
 
-  const rateLimited = languageResponses.find((response) => response.isRateLimited)
   if (rateLimited) {
     return jsonError('GitHub API のレート制限に達しました。時間を置いて再試行してください。', 429)
   }
@@ -83,12 +101,31 @@ export async function GET() {
     )
   }
 
+  // contributors stats は 202（集計準備中）を許容し、取れた範囲で「自分のコーディング量」を算出する
+  const hardFailedContributorResponse = contributorResponses.find(
+    (response) => !response.ok,
+  )
+
+  if (hardFailedContributorResponse) {
+    return jsonError(
+      `コーディング量の取得に失敗しました: ${hardFailedContributorResponse.errorMessage ?? 'unknown error'}`,
+      502,
+    )
+  }
+
   const languageMaps = languageResponses
     .map((response) => response.data)
     .filter((data): data is Record<string, number> => data !== null)
 
+  const contributorStatsList = contributorResponses.map((response) => response.data)
+
   const stats = aggregateLanguageStats(languageMaps)
+  const codingActivity = aggregateCodingActivity(contributorStatsList, username)
 
   // クライアントには必要最小限の整形データのみ返す
-  return NextResponse.json(stats satisfies LanguageStat[])
+  return NextResponse.json({
+    languages: stats,
+    codingActivity,
+    visibility: 'public_and_private_owner',
+  })
 }
