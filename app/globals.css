@@ -83,3 +83,14 @@ body {
 .prose h3:hover .heading-anchor {
   opacity: 1;
 }
+
+
+@keyframes language-bar-grow {
+  from {
+    width: 0%;
+  }
+
+  to {
+    width: var(--language-width);
+  }
+}
