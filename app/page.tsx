@@ -19,10 +19,14 @@ export default function HomePage() {
 
         <div className="mt-6 flex flex-wrap items-center gap-3">
           <Button href="/blog">Blog</Button>
+          <Button href="/languages" variant="outline">
+            Language Stats
+          </Button>
           <Button href={getGitHubProfileUrl()} variant="outline" external>
             GitHub
           </Button>
         </div>
+
       </section>
     </Container>
   )

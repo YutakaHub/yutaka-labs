@@ -6,8 +6,13 @@ import { Container } from '@/components/layout/container'
 import { cn } from '@/lib/utils'
 
 const tabs = [
-  { label: 'Profile', href: '/', match: (pathname: string) => pathname === '/' },
+  { label: 'Home', href: '/', match: (pathname: string) => pathname === '/' },
   { label: 'Blog', href: '/blog', match: (pathname: string) => pathname.startsWith('/blog') },
+  {
+    label: 'Languages',
+    href: '/languages',
+    match: (pathname: string) => pathname.startsWith('/languages'),
+  },
 ]
 
 export function HeaderNav() {
