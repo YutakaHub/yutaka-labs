@@ -1,7 +1,11 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
-import type { LanguagesApiResponse, LanguageStat } from '@/lib/github-language'
+import type {
+  CodingActivitySummary,
+  LanguagesApiResponse,
+  LanguageStat,
+} from '@/lib/github-language'
 
 type ApiError = {
   error?: string
@@ -11,7 +15,7 @@ export function useGitHubLanguagesData() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [stats, setStats] = useState<LanguageStat[]>([])
-  const [response, setResponse] = useState<LanguagesApiResponse | null>(null)
+  const [codingActivity, setCodingActivity] = useState<CodingActivitySummary | null>(null)
 
   const totalBytes = useMemo(
     () => stats.reduce((sum, item) => sum + item.bytes, 0),
@@ -34,17 +38,17 @@ export function useGitHubLanguagesData() {
           const errorJson = (await fetchResponse.json()) as ApiError
           setError(errorJson.error ?? 'データの取得に失敗しました。')
           setStats([])
-          setResponse(null)
+          setCodingActivity(null)
           return
         }
 
         const data = (await fetchResponse.json()) as LanguagesApiResponse
         setStats(data.languages)
-        setResponse(data)
+        setCodingActivity(data.codingActivity)
       } catch {
         setError('通信エラーが発生しました。ネットワーク状態を確認してください。')
         setStats([])
-        setResponse(null)
+        setCodingActivity(null)
       } finally {
         setLoading(false)
       }
@@ -58,6 +62,6 @@ export function useGitHubLanguagesData() {
     error,
     stats,
     totalBytes,
-    response,
+    codingActivity,
   }
 }

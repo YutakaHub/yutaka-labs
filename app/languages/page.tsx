@@ -1,7 +1,6 @@
 'use client'
 
 import { CodingActivityPanel } from '@/components/languages/coding-activity-panel'
-import { ContributionRadarChart } from '@/components/languages/contribution-radar-chart'
 import { LanguageExplanationPanel } from '@/components/languages/language-explanation-panel'
 import { LanguageStatsList } from '@/components/languages/language-stats-list'
 import { useGitHubLanguagesData } from '@/components/languages/use-github-languages-data'
@@ -12,7 +11,7 @@ export default function LanguagesPage() {
     error,
     stats,
     totalBytes,
-    response,
+    codingActivity,
   } = useGitHubLanguagesData()
 
   return (
@@ -32,16 +31,8 @@ export default function LanguagesPage() {
         </p>
       ) : null}
 
-      {response?.contributionSummary ? (
-        <ContributionRadarChart
-          metrics={response.contributionSummary.metrics}
-          hasAnyRestrictedContributions={response.contributionSummary.hasAnyRestrictedContributions}
-          restrictedContributionsCount={response.contributionSummary.restrictedContributionsCount}
-        />
-      ) : null}
-
-      {response?.codingActivity ? (
-        <CodingActivityPanel codingActivity={response.codingActivity} />
+      {codingActivity ? (
+        <CodingActivityPanel codingActivity={codingActivity} />
       ) : null}
 
       <LanguageExplanationPanel />
